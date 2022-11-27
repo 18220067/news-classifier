@@ -48,4 +48,4 @@ jobs:
         app-name: 'newsClassifiertst'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_b140004779ac40479f03e0b121ede58f }}
-        images: 'tugastst.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}'
+        images: 'tugastst.azurecr.io/${{ secrets.AzureAppService_tugasTST_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}'

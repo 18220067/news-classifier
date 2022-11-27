@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://tugastst.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_5c0ca6572d794397a3586ee3ffdbf84b }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_e3bb0dcef64e4a1ab9a5a8b945d145f3 }}
+        username: ${{ secrets.AzureAppService_tugasTST_5c0ca6572d794397a3586ee3ffdbf84b }}
+        password: ${{ secrets.AzureAppService_COzTpJ/Awed1ls3hSQhFyKRf+9coCbMA_e3bb0dcef64e4a1ab9a5a8b945d145f3 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: tugastst.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}
+        tags: tugastst.azurecr.io/${{ secrets.AzureAppService_tugasTST_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:

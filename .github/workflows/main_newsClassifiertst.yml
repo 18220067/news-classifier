@@ -1,0 +1,51 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - newsClassifiertst
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to registry
+      uses: docker/login-action@v1
+      with:
+        registry: https://tugastst.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_908b37c5e9b541e4ae5580173b71b2c3 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_a6de1c1a3cc54814bc7a861307b8f387 }}
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: tugastst.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_908b37c5e9b541e4ae5580173b71b2c3 }}/news-1:${{ github.sha }}
+        file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'newsClassifiertst'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_ea9792ae09e248b18c2a796518180b65 }}
+        images: 'tugastst.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_908b37c5e9b541e4ae5580173b71b2c3 }}/news-1:${{ github.sha }}'

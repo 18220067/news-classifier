@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://tugastst.azurecr.io/
-        username: ${{ secrets.AzureAppService_newsClassifiertst\$newsClassifiertst_5c0ca6572d794397a3586ee3ffdbf84b }}
-        password: ${{ secrets.AzureAppService_xYzuTe1cQciAcsFPGnWquXPWwJpNh9JxiLcHfNClX83vzPAwxJdJqK9WiQKh_e3bb0dcef64e4a1ab9a5a8b945d145f3 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_5c0ca6572d794397a3586ee3ffdbf84b }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_e3bb0dcef64e4a1ab9a5a8b945d145f3 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: tugastst.azurecr.io/${{ secrets.AzureAppService_newsClassifiertst\$newsClassifiertst_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}
+        tags: tugastst.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -48,4 +48,4 @@ jobs:
         app-name: 'newsClassifiertst'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_b140004779ac40479f03e0b121ede58f }}
-        images: 'tugastst.azurecr.io/${{ secrets.AzureAppService_newsClassifiertst\$newsClassifiertst_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}'
+        images: 'tugastst.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_5c0ca6572d794397a3586ee3ffdbf84b }}/news-1:${{ github.sha }}'

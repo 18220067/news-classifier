@@ -24,7 +24,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: tugastst.azurecr.io/tugasTST/news-1:${{ github.sha }}
+        tags: tugastst.azurecr.io/tugastst/news-1:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:

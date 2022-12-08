@@ -1,3 +1,4 @@
+from requests import request
 from pymongo import MongoClient
 from fastapi import FastAPI, HTTPException, Depends, Request, status
 from fastapi.responses import JSONResponse
@@ -9,6 +10,7 @@ from app.hashing import Hash
 from app.model import User, Login, Token, TokenData
 import joblib
 from newspaper import Article
+import json
 
 
 app = FastAPI()
@@ -24,6 +26,18 @@ def home():
 
 class request_body(BaseModel):
     link: str
+
+
+class GradRequest(BaseModel):
+    name: str
+    score: int
+    toefl: int
+    university: int
+    sop: float
+    lor: float
+    cgpa: float
+    certificate: int
+
 
 
 @app.post('/register')
@@ -45,7 +59,7 @@ def login(request: OAuth2PasswordRequestForm = Depends()):
     if not Hash.verify(user["password"], request.password):
         raise HTTPException(
             status_code=401,
-            detail=f'Invalid username or password, please try again')
+            detail=f'Invalid password, please try again')
     access_token = create_access_token(data={"sub": user["username"]})
     return {"access token": access_token, "token type": "bearer"}
 
@@ -64,7 +78,36 @@ def predict(data: request_body, token: str):
         res = 'Fake'
     elif (prediction == 1):
         res = 'Real'
-    return {'This News is {}'.format(res)}
+    return {'result':'This News is {}'.format(res)}
+
+
+@app.post('/callPredict')
+def Predict(link: request_body):
+    url = "https://newsclassifiertst.azurewebsites.net/login"
+    user = {
+        "username": "johndoe",
+        "password": "secret"
+    }
+    response = request("POST", url, data=user)
+    print(response.json())
+    access_token = response.json()["access token"]
+    url = "https://newsclassifiertst.azurewebsites.net/predict"
+    response2 = request("POST", url+'/?token='+access_token, data=link.json())
+    return response2.json()
+    # if (str(response2.json()) == "['This News is Real']"):
+    #     return "Real News"
+    # else:
+    #     return "Fake News"
+
+    
+
+@app.post('/callIisma')
+def Iisma(x: GradRequest):
+    url = "https://iismaprediction.azurewebsites.net/iisma/"
+    response2 = request("POST", url, data=x.json())
+    return response2.json()
+
+
 
 
 

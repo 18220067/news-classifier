@@ -109,7 +109,7 @@ def sumarize_news(token: str, link):
         else:
             final_res += ' ' + str(kalimat)
 
-    return final_res
+    return {final_res}
 
 @app.get("/latest-news",tags=["Support"])
 def get_latest_news(token: str, amount: int):

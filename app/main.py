@@ -18,7 +18,12 @@ from sumy.summarizers.lsa import LsaSummarizer as Summarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk
-nltk.download('punkt')
+# nltk.download('punkt')
+nltk.data.path.append("./")
+
+print(nltk.data.path)
+import os
+print(os.getcwd())
 app = FastAPI()
 
 mongodb_uri = 'mongodb+srv://admin:admin@cluster0.eshtk.mongodb.net/?retryWrites=true&w=majority'

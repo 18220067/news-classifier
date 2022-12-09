@@ -46,7 +46,13 @@ def create_user(request: User):
     user_object = dict(request)
     user_object["password"] = hashed_pass
     user_id = db["users"].insert_one(user_object)
-    return {"User succesfully created"}
+    user = db["users"].find_one({"username": request.username})
+    if not user :
+        return {"User successfully created"}
+    else :
+        raise HTTPException(
+            status_code=403,
+            detail=f'Already exists, please enter a different username')
 
 
 @app.post('/login')

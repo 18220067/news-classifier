@@ -5,7 +5,7 @@ from app.model import TokenData
 
 SECRET_KEY = "31808a05838069774d6c5275bf9af563661627a6085ff83570de4bcc514b47a5"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 43200
 
 def create_access_token(data: dict):
     to_encode = data.copy()

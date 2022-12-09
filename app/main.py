@@ -122,34 +122,16 @@ def get_latest_news(token: str, amount: int):
     return {"latest_news": news_titles}
 
 
-# @app.post('/callPredict')
-# def Predict(link: request_body):
-#     url = "https://newsclassifiertst.azurewebsites.net/login"
-#     user = {
-#         "username": "johndoe",
-#         "password": "secret"
-#     }
-#     response = request("POST", url, data=user)
-#     print(response.json())
-#     access_token = response.json()["access token"]
-#     url = "https://newsclassifiertst.azurewebsites.net/predict"
-#     response2 = request("POST", url+'/?token='+access_token, data=link.json())
-#     return response2.json()
-    # if (str(response2.json()) == "['This News is Real']"):
-    #     return "Real News"
-    # else:
-    #     return "Fake News"
-
-# @app.post('/callIisma', tags=["Iisma Prediction"])
-# def Iisma(input: GradRequest):
-#     url = "https://iismaprediction.azurewebsites.net/token/"
-#     user = {
-#         "username": "tania",
-#         "password": "secret"
-#     }
-#     response = request("POST", url, data=user)
-#     access_token = response.json()["access_token"]
-#     url = "https://iismaprediction.azurewebsites.net/iisma/"
-#     response2 = request("POST", url+'/?token='+access_token, data=input.json())
-#     return response2.json()
+@app.post('/callIisma', tags=["Iisma Prediction"])
+def Iisma(input: GradRequest):
+    url = "https://iismaprediction.azurewebsites.net/token/"
+    user = {
+        "username": "tania",
+        "password": "secret"
+    }
+    response = request("POST", url, data=user)
+    access_token = response.json()["access token"]
+    url = "https://iismaprediction.azurewebsites.net/iisma/"
+    response2 = request("POST", url+'/?token='+access_token, data=input.json())
+    return response2.json()
 

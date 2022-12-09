@@ -145,8 +145,7 @@ def sumarize_news(token: str, link):
     return {final_res}
 
 @app.get("/latest-news",tags=["Support"])
-def get_latest_news(token: str, amount: int):
-    user = verify_token(token)
+def get_latest_news(amount: int):
     response = requests.get("https://www.bbc.com/news")
     soup = BeautifulSoup(response.text, "html.parser")
     news_items = soup.find_all("div", class_="gs-c-promo-body")

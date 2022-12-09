@@ -101,17 +101,51 @@ def predict(data: request_body, token: str):
 
 @app.post('/summarize', tags=["Core"])
 def sumarize_news(token: str, link):
+    def manual_tokenize(news):
+        return news.split()
+    def tokenize_sentence(news):
+        return news.splitlines()
+
+    def TF(news):
+        tf = []
+        for sentence in news:
+            for w in sentence:
+                tf.append(w)
+        bow = list(set(tf))
+        fin_res = {}
+        for a_word in bow:
+            fin_res[a_word] = w.count(a_word)
+        return fin_res
+
+    def weighting(news,TF):
+        w = []
+        for words in news:
+            counter = 0
+            for word in words:
+                counter += TF[word]
+            w.append(counter)
+        return w
+
     user = verify_token(token)
+    article = Article(link)
+    article.download()
+    article.parse()
+    to_predict = article.text
+    to_predict = to_predict.lower()
+
+    sentence_list = tokenize_sentence(to_predict)
+    data = []
+    for sentence in sentence_list:
+        data.append(manual_tokenize(sentence))
+    data = (list(filter(None, data)))
+    tf = TF(data)
+    rank = weighting(data,tf)
+    
+    num = 2
     final_res = ''
-    parse_from_web = HtmlParser.from_url(link, Tokenizer('English'))
-    stemmer = Stemmer('English')
-    summarizer_model = Summarizer(stemmer)
-    summarizer_model.stop_words = get_stop_words('English')
-    for kalimat in summarizer_model(parse_from_web.document, 2):
-        if (len(final_res) == 0):
-            final_res += str(kalimat)
-        else:
-            final_res += ' ' + str(kalimat)
+    sorted_list = np.argsort(rank)[::-1][:num]
+    for i in range(num):
+        final_res += ' {} '.format(sentence_list[sorted_list[i]])
 
     return {final_res}
 

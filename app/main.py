@@ -17,8 +17,7 @@ from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer as Summarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
-import nltk
-nltk.download('punkt')
+
 
 
 app = FastAPI()
@@ -124,14 +123,15 @@ def get_latest_news(token: str, amount: int):
 
 @app.post('/callIisma', tags=["Iisma Prediction"])
 def Iisma(input: GradRequest):
-    url = "https://iismaprediction.azurewebsites.net/token/"
+    url = "https://iismapredictiontst.azurewebsites.net/token"
     user = {
         "username": "tania",
         "password": "secret"
     }
     response = request("POST", url, data=user)
-    access_token = response.json()["access token"]
-    url = "https://iismaprediction.azurewebsites.net/iisma/"
+    print(response.json())
+    access_token = response.json()["access_token"]
+    url = "https://iismapredictiontst.azurewebsites.net/iisma/"
     response2 = request("POST", url+'/?token='+access_token, data=input.json())
     return response2.json()
 

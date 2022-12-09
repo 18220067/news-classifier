@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 import uvicorn
 from pydantic import BaseModel
-from app.token2 import create_access_token, verify_token  
+from app.token2 import create_access_token, verify_token
 from app.hashing import Hash
 from app.model import User, Login, Token, TokenData
 import joblib
@@ -20,9 +20,11 @@ port = 8000
 client = MongoClient(mongodb_uri, port)
 db = client["User"]
 
-@app.get('/')
+
+@app.get('/', tags=["root"])
 def home():
     return {'text': 'Welcome to News Classifier'}
+
 
 class request_body(BaseModel):
     link: str
@@ -39,23 +41,22 @@ class GradRequest(BaseModel):
     certificate: int
 
 
-
-@app.post('/register')
+@app.post('/register', tags=["Authentication"])
 def create_user(request: User):
     hashed_pass = Hash.bcrypt(request.password)
     user_object = dict(request)
     user_object["password"] = hashed_pass
-    user_id = db["users"].insert_one(user_object)
     user = db["users"].find_one({"username": request.username})
-    if not user :
+    if not user:
+        user_id = db["users"].insert_one(user_object)
         return {"User successfully created"}
-    else :
+    else:
         raise HTTPException(
             status_code=403,
             detail=f'Already exists, please enter a different username')
 
 
-@app.post('/login')
+@app.post('/login', tags=["Authentication"])
 def login(request: OAuth2PasswordRequestForm = Depends()):
     user = db["users"].find_one({"username": request.username})
     if not user:
@@ -70,7 +71,7 @@ def login(request: OAuth2PasswordRequestForm = Depends()):
     return {"access token": access_token, "token type": "bearer"}
 
 
-@app.post('/predict')
+@app.post('/predict', tags=["Core"])
 def predict(data: request_body, token: str):
     user = verify_token(token)
     clf = joblib.load('./app/model/model_fakenewsclassifier.pkl')
@@ -84,7 +85,7 @@ def predict(data: request_body, token: str):
         res = 'Fake'
     elif (prediction == 1):
         res = 'Real'
-    return {'result':'This News is {}'.format(res)}
+    return {'result': 'This News is {}'.format(res)}
 
 
 @app.post('/callPredict')
@@ -105,15 +106,17 @@ def Predict(link: request_body):
     # else:
     #     return "Fake News"
 
-    
 
-@app.post('/callIisma')
-def Iisma(x: GradRequest):
+@app.post('/callIisma', tags=["Core"])
+def Iisma(input: GradRequest):
+    # url = "https://newsclassifiertst.azurewebsites.net/token"
+    # user = {
+    #     "username": "tania",
+    #     "password": "secret"
+    # }
+    # response = request("POST", url, data=user)
+    # access_token = response.json()["access token"]
     url = "https://iismaprediction.azurewebsites.net/iisma/"
-    response2 = request("POST", url, data=x.json())
+    response2 = request("POST", url, data=input.json())
+    # response2 = request("POST", url+'/?token='+access_token, data=input.json())
     return response2.json()
-
-
-
-
-
